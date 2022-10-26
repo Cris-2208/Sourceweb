@@ -1,0 +1,78 @@
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script>
+        function deleteConfirm() {
+            if(confirm("Are you sure to delete it?")) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+        </script>
+        <form name="frm" method="post" action="">
+        <h3 style="text-align: center">Product Management</h3>
+       <div style="padding: 0 6rem 0 6rem">
+        <p style="text-align: end">
+        <img src="images/add.png" alt="Add new" width="16" height="16" border="0" /> 
+        <a href="?page=add_product" style="color: black!important;"> Add new</a>
+        </p>
+        <table id="tableproduct" class="table table-striped table-bordered" cellspacing="0" width="100%" style="text-align: center;border: rgb(0, 123, 255) solid;">
+            <thead>
+                <tr>
+                    <th><strong>No.</strong></th>
+                    <th><strong>Product ID</strong></th>
+                    <th><strong>Product Name</strong></th>
+                    <th><strong>Price($)</strong></th>
+                    <th><strong>Quantity</strong></th>
+                    <th><strong>Category</strong></th>
+                    <th><strong>Image</strong></th>
+                    <th><strong>Edit</strong></th>
+                    <th><strong>Delete</strong></th>
+                </tr>
+             </thead>
+
+            <tbody>
+        <?php
+        include_once("connection.php");
+        if(isset($_GET["function"])=="del")
+        {
+            if(isset($_GET["id"]))
+            {
+                $id=$_GET["id"];
+                mysqli_query($conn, "DELETE FROM product WHERE Product_ID='$id'");
+            }
+        }
+        $No=1;
+                $result = mysqli_query($conn, "SELECT Product_ID, Product_Name, Price, Pro_qty, Pro_image, Cat_Name
+                FROM product a, category b 
+                WHERE a.Cat_ID = b.Cat_ID ORDER BY ProDate DESC");
+            
+                while($row=mysqli_fetch_array($result, MYSQLI_ASSOC)) {
+        ?>
+        <tr>
+              <td ><?php echo $No; ?></td>
+              <td ><?php echo $row["Product_ID"]; ?></td>
+              <td><?php echo $row["Product_Name"];  ?></td>
+              <td><?php echo $row["Price"]; ?></td>
+              <td ><?php echo $row["Pro_qty"]; ?></td>
+              <td><?php echo $row["Cat_Name"]; ?></td>
+
+             <td align='center' class='cotfunction button'>
+                 <img src='product-imgs/<?php echo $row['Pro_image']?>' border='0' width="50" height="50"  /></td>
+             <td align='center' class='cotfunction button'> <a href="?page=update_product&&id=<?php echo $row["Product_ID"]; ?>">
+             <img src='images/edit.png' border='0'/></a></td>
+             <td align='center' class='cotfunction button'> 
+             <a href="?page=product_management&&function=del&&id=<?php echo $row["Product_ID"]; ?>" 
+             onclick="return deleteConfirm()">
+             <img src='images/delete.png' border='0' /></a></td>
+            </tr>
+            <?php
+                    $No++;
+                }
+            ?>
+            </tbody>
+        </table>
+        </div>
+</form>
